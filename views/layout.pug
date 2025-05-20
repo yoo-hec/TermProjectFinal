@@ -1,0 +1,450 @@
+doctype html
+html
+  head
+    title Ctrl+Fit - Athletic Apparel
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    style.
+      /* Global styles */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+      body {
+        background-color: #f9f9f9;
+        color: #333;
+        line-height: 1.6;
+      }
+      a {
+        text-decoration: none;
+        color: #333;
+      }
+      
+      /* Navigation */
+      .navbar {
+        background-color: #222;
+        color: white;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+      .nav-items {
+        display: flex;
+        align-items: center;
+        height: 100%;
+      }
+      .nav-link {
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding: 0 15px;
+      }
+      .nav-link:hover {
+        background-color: #333;
+      }
+      .brand-link {
+        font-weight: bold;
+        font-size: 18px;
+      }
+      
+      /* Search bar */
+      .search-container {
+        position: relative;
+        width: 100%;
+        max-width: 300px;
+      }
+      .search-input {
+        width: 100%;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 20px;
+        font-size: 14px;
+        background-color: #333;
+        color: white;
+      }
+      .search-input::placeholder {
+        color: #aaa;
+      }
+      .search-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: #333;
+        border-radius: 0 0 5px 5px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        z-index: 1000;
+        display: none;
+      }
+      .result-item {
+        padding: 10px 15px;
+        border-bottom: 1px solid #444;
+        cursor: pointer;
+        color: white;
+      }
+      .result-item:hover {
+        background-color: #444;
+      }
+      
+      /* Footer */
+      .footer {
+        background-color: #222;
+        color: white;
+        padding: 30px 0;
+        text-align: center;
+        margin-top: 50px;
+        font-size: 14px;
+      }
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 0 20px;
+      }
+      .footer-section {
+        flex: 1;
+        min-width: 250px;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+      .footer-section h3 {
+        margin-bottom: 15px;
+        font-size: 18px;
+      }
+      .footer-links {
+        list-style: none;
+      }
+      .footer-links li {
+        margin-bottom: 10px;
+      }
+      .footer-links a {
+        color: #ddd;
+        transition: color 0.3s;
+      }
+      .footer-links a:hover {
+        color: white;
+      }
+      .footer-bottom {
+        border-top: 1px solid #444;
+        padding-top: 20px;
+        margin-top: 20px;
+      }
+      
+      /* Content container */
+      .content {
+        min-height: calc(100vh - 130px);
+      }
+      
+      /* Auth button styles */
+      .auth-button {
+        height: 100%;
+        padding: 0 15px;
+        background-color: transparent;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 14px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+      }
+      .auth-button:hover {
+        background-color: #333;
+      }
+      
+      /* Hero section */
+      .hero-section {
+        background-color: #222;
+        color: white;
+        padding: 80px 20px;
+        text-align: center;
+      }
+      .hero-title {
+        font-size: 48px;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+      }
+      .hero-subtitle {
+        font-size: 20px;
+        margin-bottom: 30px;
+        opacity: 0.8;
+      }
+      .shop-now-button {
+        display: inline-block;
+        background-color: white;
+        color: #222;
+        text-decoration: none;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 2px;
+        transition: all 0.3s;
+        border: 2px solid white;
+      }
+      .shop-now-button:hover {
+        background-color: transparent;
+        color: white;
+      }
+      
+      /* Product cards */
+      .product-card {
+        border: 1px solid #eee;
+        border-radius: 2px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        background: white;
+      }
+      .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+      .product-image-container {
+        height: 200px;
+        overflow: hidden;
+      }
+      .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s;
+      }
+      .product-card:hover .product-image {
+        transform: scale(1.05);
+      }
+      .product-card-content {
+        padding: 15px;
+      }
+      .product-name {
+        font-size: 18px;
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+      .product-description {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 15px;
+        line-height: 1.5;
+        height: 60px;
+        overflow: hidden;
+      }
+      .product-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #eee;
+        padding-top: 15px;
+      }
+      .product-price {
+        font-weight: bold;
+        font-size: 18px;
+        margin: 0;
+      }
+  body
+    nav.navbar
+      a.nav-link.brand-link(href='/') Ctrl+Fit
+      
+      .search-container
+        form(action='/product/search', method='GET')
+          input.search-input(type='text', name='q', placeholder='Search products...', autocomplete='off', id='searchInput')
+          #searchResults.search-results
+      
+      .nav-items
+        a.nav-link(href='/product') Products
+        if user
+          a.nav-link(href='/profile') Profile
+          a.nav-link(href='/cart') Cart
+          a.nav-link.auth-button(href='/logout') Logout
+        else
+          a.nav-link.auth-button(href='/login') Login/Signup
+    
+    .content
+      block content
+    
+    footer.footer
+      .footer-content
+        .footer-section
+          h3 Shop
+          ul.footer-links
+            li
+              a(href='/product') All Products
+            li
+              a(href='/product/category/apparel') Apparel
+            li
+              a(href='/product/category/accessories') Accessories
+            li
+              a(href='/product/new') New Arrivals
+        
+        .footer-section
+          h3 Help
+          ul.footer-links
+            li
+              a(href='/about') About Us
+            li
+              a(href='/faq') FAQ
+            li
+              a(href='/contact') Contact Us
+            li
+              a(href='/shipping') Shipping Info
+        
+        .footer-section
+          h3 My Account
+          ul.footer-links
+            li
+              a(href='/profile') Profile
+            li
+              a(href='/orders') Order History
+            li
+              a(href='/saved') Saved Items
+            li
+              a(href='/settings') Settings
+      
+      .footer-bottom
+        p &copy; 2025 Ctrl+Fit. All rights reserved.
+    
+    script.
+      // Enhanced search functionality with autocomplete
+      document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        
+        if (searchInput) {
+          // Show/hide results container
+          searchInput.addEventListener('focus', function() {
+            if (this.value.length >= 2) {
+              searchResults.style.display = 'block';
+            }
+          });
+          
+          // Hide results when clicking outside
+          document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+              searchResults.style.display = 'none';
+            }
+          });
+          
+          // Live search as user types
+          let debounceTimer;
+          searchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            
+            if (this.value.length < 2) {
+              searchResults.style.display = 'none';
+              return;
+            }
+            
+            debounceTimer = setTimeout(function() {
+              fetchSearchResults(searchInput.value);
+            }, 300);
+          });
+          
+          // Function to fetch search results
+          function fetchSearchResults(query) {
+            // This would typically be an AJAX call to your server
+            // For now, we'll simulate it with hardcoded product data
+            const products = [
+              { id: 1, name: 'Ctrl+Fit Hoodie', description: 'Premium cotton-blend hoodie' },
+              { id: 2, name: 'Ctrl+Fit T-shirt', description: 'Breathable performance t-shirt' },
+              { id: 3, name: 'Ctrl+Fit Shaker', description: 'Leak-proof protein shaker' },
+              { id: 4, name: 'Ctrl+Fit Sweatpants', description: 'Comfortable sweatpants with stretch fabric' },
+              { id: 5, name: 'Ctrl+Fit Shorts', description: 'Lightweight training shorts' },
+              { id: 6, name: 'Ctrl+Fit WindBreaker', description: 'Windproof and water-resistant jacket' },
+              { id: 7, name: 'Ctrl+Fit Leggings', description: 'High-performance compression leggings' },
+              { id: 8, name: 'Ctrl+Fit Water Bottle', description: 'Insulated stainless steel bottle' },
+              { id: 9, name: 'Ctrl+Fit Towel', description: 'Quick-dry microfiber gym towel' },
+              { id: 10, name: 'Ctrl+Fit Gloves', description: 'Premium weightlifting gloves' },
+              { id: 11, name: 'Ctrl+Fit Hat', description: 'Lightweight performance cap' },
+              { id: 12, name: 'Ctrl+Fit Backpack', description: 'Durable gym backpack' }
+            ];
+            
+            // Filter products based on query
+            const lowerQuery = query.toLowerCase();
+            const filtered = products.filter(product => {
+              return product.name.toLowerCase().includes(lowerQuery) || 
+                     product.description.toLowerCase().includes(lowerQuery);
+            });
+            
+            // Display results
+            displaySearchResults(filtered.slice(0, 5)); // Show top 5 results
+          }
+          
+          // Function to display search results
+          function displaySearchResults(results) {
+            searchResults.innerHTML = '';
+            
+            if (results.length === 0) {
+              const noResults = document.createElement('div');
+              noResults.className = 'result-item';
+              noResults.textContent = 'No matching products found';
+              searchResults.appendChild(noResults);
+            } else {
+              results.forEach(function(product) {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.innerHTML = `<strong>${product.name}</strong><br><small>${product.description}</small>`;
+                
+                // Navigate to product page when clicked
+                resultItem.addEventListener('click', function() {
+                  window.location.href = `/product/${product.id}`;
+                });
+                
+                searchResults.appendChild(resultItem);
+              });
+            }
+            
+            searchResults.style.display = 'block';
+          }
+        }
+      });
+    
+    script.
+      // Image loading fix script
+      document.addEventListener('DOMContentLoaded', function() {
+        // Find all images on the page
+        const images = document.querySelectorAll('img');
+        
+        // Loop through each image
+        images.forEach(function(img) {
+          // Get the original src attribute
+          const originalSrc = img.getAttribute('src');
+          
+          // Add error handling for product images
+          if (originalSrc && originalSrc.includes('/images/Product')) {
+            img.onerror = function() {
+              console.log('Failed to load image:', this.src);
+              
+              // Try to fix the path by forcing a browser cache bypass
+              const timestamp = new Date().getTime();
+              const newSrc = this.src.split('?')[0] + '?t=' + timestamp;
+              this.src = newSrc;
+              
+              // If it still fails, try an alternative approach
+              this.onerror = function() {
+                // Extract the product ID from the path
+                const match = this.src.match(/Product(\d+)\.png/i);
+                if (match && match[1]) {
+                  const productId = match[1];
+                  // Try with lowercase 'p' in 'product'
+                  this.src = `/images/product${productId}.png?nocache=${timestamp}`;
+                  
+                  // If that still fails, load a default image
+                  this.onerror = function() {
+                    this.src = '/images/ctrl-fit.png';
+                    this.onerror = null; // Prevent infinite loop
+                  };
+                }
+              };
+            };
+          }
+        });
+      });

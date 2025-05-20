@@ -1,0 +1,912 @@
+extends layout
+
+block content
+  .profile-container
+    .profile-header
+      .header-content
+        .profile-avatar
+          .avatar-circle
+            span.avatar-initial= user.username.charAt(0).toUpperCase()
+        
+        .profile-info
+          h1.welcome-heading Welcome, #{user.username}!
+          p.member-since Member since May 2025
+    
+    .profile-content
+      .profile-section
+        .section-header
+          h2 My Account
+          span.section-icon 👤
+        
+        .section-content
+          .info-row
+            .info-label Username
+            .info-value #{user.username}
+          
+          .account-actions
+            button.edit-profile-btn(onclick="toggleModal('profileModal')") Edit Profile
+      
+      .profile-section
+        .section-header
+          h2 Order History
+          span.section-icon 🛍️
+        
+        .section-content
+          if orders && orders.length > 0
+            each order in orders
+              .order-card
+                .order-header
+                  .order-number Order ##{order.id}
+                  .order-date #{new Date(order.date).toLocaleDateString()}
+                
+                .order-items
+                  each item in order.items
+                    .order-item
+                      .item-image
+                        img(src=`/images/Product${item.product_id}.png`, alt=item.name)
+                      .item-details
+                        .item-name #{item.name}
+                        .item-quantity Qty: #{item.quantity}
+                        .item-price $#{(item.price).toFixed(2)}
+                
+                .order-footer
+                  .order-total Total: $#{order.total.toFixed(2)}
+                  button.view-order-btn View Details
+          else
+            .empty-orders
+              .empty-icon 📦
+              h3 No Orders Yet
+              p Start shopping to see your order history here.
+              a.shop-now-btn(href='/product') Shop Now
+      
+      .profile-section
+        .section-header
+          h2 Saved Items
+          span.section-icon ❤️
+        
+        .section-content
+          if savedItems && savedItems.length > 0
+            .saved-items-grid
+              each item in savedItems
+                .saved-item
+                  .saved-item-image
+                    img(src=item.image_url, alt=item.name)
+                  .saved-item-details
+                    h3.saved-item-name= item.name
+                    p.saved-item-price $#{item.price.toFixed(2)}
+                    .saved-item-actions
+                      a.view-item-btn(href=`/product/${item.product_id}`) View
+                      form.add-to-cart-form(action=`/product/add-to-cart/${item.product_id}` method='POST')
+                        input(type='hidden' name='returnUrl' value='/profile')
+                        button.add-to-cart-btn(type='submit') Add to Cart
+                      form.remove-saved-form(action=`/profile/saved/remove/${item.saved_id}` method='POST')
+                        button.remove-saved-btn(type='submit') ×
+            
+            if savedItems.length > 4
+              .view-all-saved
+                a.view-all-btn(href='/profile/saved') View All Saved Items
+          else
+            .empty-saved
+              .empty-icon 🔖
+              h3 No Saved Items
+              p Save items you love for later.
+              a.browse-products-btn(href='/product') Browse Products
+      
+      .profile-section
+        .section-header
+          h2 Account Settings
+          span.section-icon ⚙️
+        
+        .section-content
+          .settings-card
+            .settings-icon 🔒
+            .settings-text
+              h3 Security
+              p Manage your password and security preferences.
+            button.settings-btn(onclick="toggleModal('securityModal')") Manage
+          
+          .settings-card
+            .settings-icon 📱
+            .settings-text
+              h3 Notifications
+              p Control how we contact you.
+            button.settings-btn(onclick="toggleModal('notificationsModal')") Manage
+          
+          .settings-card
+            .settings-icon 📍
+            .settings-text
+              h3 Addresses
+              p Manage your shipping addresses.
+            button.settings-btn(onclick="toggleModal('addressesModal')") Manage
+  
+  // Modals
+  #profileModal.modal
+    .modal-content
+      .modal-header
+        h2 Edit Profile
+        span.close-modal(onclick="toggleModal('profileModal')") ×
+      
+      .modal-body
+        form(action='/profile/update' method='POST')
+          .form-group
+            label(for='username') Username
+            input#username(type='text' name='username' value=user.username)
+          
+          .form-actions
+            button.cancel-btn(type='button' onclick="toggleModal('profileModal')") Cancel
+            button.save-btn(type='submit') Save Changes
+  
+  #securityModal.modal
+    .modal-content
+      .modal-header
+        h2 Security Settings
+        span.close-modal(onclick="toggleModal('securityModal')") ×
+      
+      .modal-body
+        form(action='/profile/change-password' method='POST')
+          .form-group
+            label(for='currentPassword') Current Password
+            input#currentPassword(type='password' name='currentPassword' required)
+          
+          .form-group
+            label(for='newPassword') New Password
+            input#newPassword(type='password' name='newPassword' required)
+          
+          .form-group
+            label(for='confirmPassword') Confirm New Password
+            input#confirmPassword(type='password' name='confirmPassword' required)
+          
+          .form-actions
+            button.cancel-btn(type='button' onclick="toggleModal('securityModal')") Cancel
+            button.save-btn(type='submit') Change Password
+  
+  #notificationsModal.modal
+    .modal-content
+      .modal-header
+        h2 Notification Preferences
+        span.close-modal(onclick="toggleModal('notificationsModal')") ×
+      
+      .modal-body
+        form(action='/profile/notifications' method='POST')
+          .form-group
+            label.switch-label Email Notifications
+            label.switch
+              input(type='checkbox' name='emailNotifications' checked)
+              span.slider.round
+          
+          .form-group
+            label.switch-label SMS Notifications
+            label.switch
+              input(type='checkbox' name='smsNotifications')
+              span.slider.round
+          
+          .notification-type
+            h3 What to notify me about:
+            
+            .checkbox-group
+              label.checkbox-label
+                input(type='checkbox' name='orderUpdates' checked)
+                span Order Updates
+            
+            .checkbox-group
+              label.checkbox-label
+                input(type='checkbox' name='promotions' checked)
+                span Promotions & Sales
+            
+            .checkbox-group
+              label.checkbox-label
+                input(type='checkbox' name='newProducts')
+                span New Products
+          
+          .form-actions
+            button.cancel-btn(type='button' onclick="toggleModal('notificationsModal')") Cancel
+            button.save-btn(type='submit') Save Preferences
+  
+  #addressesModal.modal
+    .modal-content
+      .modal-header
+        h2 Manage Addresses
+        span.close-modal(onclick="toggleModal('addressesModal')") ×
+      
+      .modal-body
+        .address-list
+          .no-addresses
+            p You don't have any saved addresses.
+        
+        form(action='/profile/address/add' method='POST')
+          h3 Add New Address
+          
+          .form-row
+            .form-group
+              label(for='street') Street Address
+              input#street(type='text' name='street' required)
+          
+          .form-row
+            .form-group
+              label(for='city') City
+              input#city(type='text' name='city' required)
+            
+            .form-group
+              label(for='state') State/Province
+              input#state(type='text' name='state' required)
+          
+          .form-row
+            .form-group
+              label(for='zip') ZIP/Postal Code
+              input#zip(type='text' name='zip' required)
+            
+            .form-group
+              label(for='country') Country
+              select#country(name='country')
+                option(value='US') United States
+                option(value='CA') Canada
+                option(value='MX') Mexico
+                option(value='UK') United Kingdom
+          
+          .checkbox-group
+            label.checkbox-label
+              input(type='checkbox' name='is_default')
+              span Make this my default address
+          
+          .form-actions
+            button.cancel-btn(type='button' onclick="toggleModal('addressesModal')") Cancel
+            button.save-btn(type='submit') Add Address
+  
+  style.
+    /* Profile Page Styles */
+    .profile-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    /* Header Section */
+    .profile-header {
+      background: linear-gradient(135deg, #333 0%, #555 100%);
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 30px;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .header-content {
+      display: flex;
+      align-items: center;
+    }
+    
+    .avatar-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: white;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: bold;
+      margin-right: 20px;
+    }
+    
+    .welcome-heading {
+      font-size: 32px;
+      margin: 0 0 5px 0;
+    }
+    
+    .member-since {
+      opacity: 0.8;
+      margin: 0;
+    }
+    
+    /* Profile Content */
+    .profile-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    .profile-section {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    
+    .section-header {
+      background-color: #f8f8f8;
+      padding: 15px 20px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .section-header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+    
+    .section-icon {
+      font-size: 22px;
+    }
+    
+    .section-content {
+      padding: 20px;
+    }
+    
+    /* Account Info */
+    .info-row {
+      display: flex;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .info-label {
+      font-weight: bold;
+      width: 40%;
+      color: #777;
+    }
+    
+    .info-value {
+      width: 60%;
+    }
+    
+    .edit-profile-btn {
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    
+    .edit-profile-btn:hover {
+      background-color: #555;
+    }
+    
+    /* Orders */
+    .order-card {
+      border: 1px solid #eee;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      overflow: hidden;
+    }
+    
+    .order-header {
+      background-color: #f8f8f8;
+      padding: 10px 15px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+    
+    .order-items {
+      padding: 15px;
+    }
+    
+    .order-item {
+      display: flex;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .order-item:last-child {
+      border-bottom: none;
+    }
+    
+    .item-image {
+      width: 50px;
+      height: 50px;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-right: 15px;
+    }
+    
+    .item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .item-details {
+      flex: 1;
+    }
+    
+    .item-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .item-quantity, .item-price {
+      font-size: 14px;
+      color: #777;
+    }
+    
+    .order-footer {
+      background-color: #f8f8f8;
+      padding: 10px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .order-total {
+      font-weight: bold;
+    }
+    
+    .view-order-btn {
+      background-color: transparent;
+      border: 1px solid #333;
+      color: #333;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s;
+    }
+    
+    .view-order-btn:hover {
+      background-color: #333;
+      color: white;
+    }
+    
+    /* Saved Items */
+    .saved-items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
+    }
+    
+    .saved-item {
+      border: 1px solid #eee;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .saved-item-image {
+      height: 100px;
+      overflow: hidden;
+    }
+    
+    .saved-item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .saved-item-details {
+      padding: 10px;
+    }
+    
+    .saved-item-name {
+      font-size: 14px;
+      margin: 0 0 5px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .saved-item-price {
+      font-weight: bold;
+      font-size: 14px;
+      margin: 0 0 10px 0;
+    }
+    
+    .saved-item-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .view-item-btn, .add-to-cart-btn {
+      width: 100%;
+      padding: 6px 0;
+      font-size: 12px;
+      text-align: center;
+      border-radius: 3px;
+      transition: all 0.3s;
+    }
+    
+    .view-item-btn {
+      background-color: #333;
+      color: white;
+      text-decoration: none;
+    }
+    
+    .view-item-btn:hover {
+      background-color: #555;
+    }
+    
+    .add-to-cart-btn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .add-to-cart-btn:hover {
+      background-color: #45a049;
+    }
+    
+    .remove-saved-form {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      margin: 0;
+    }
+    
+    .remove-saved-btn {
+      background-color: rgba(255, 255, 255, 0.8);
+      color: #ff6b6b;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .remove-saved-btn:hover {
+      background-color: #ff6b6b;
+      color: white;
+    }
+    
+    .view-all-saved {
+      text-align: center;
+      margin-top: 15px;
+    }
+    
+    .view-all-btn {
+      display: inline-block;
+      color: #333;
+      text-decoration: none;
+      border-bottom: 1px solid #333;
+      transition: all 0.3s;
+    }
+    
+    .view-all-btn:hover {
+      color: #555;
+    }
+    
+    /* Empty States */
+    .empty-orders, .empty-saved {
+      text-align: center;
+      padding: 30px 20px;
+    }
+    
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+    
+    .empty-orders h3, .empty-saved h3 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+    }
+    
+    .empty-orders p, .empty-saved p {
+      margin: 0 0 20px 0;
+      color: #777;
+    }
+    
+    .shop-now-btn, .browse-products-btn {
+      display: inline-block;
+      background-color: #333;
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    
+    .shop-now-btn:hover, .browse-products-btn:hover {
+      background-color: #555;
+    }
+    
+    /* Settings Cards */
+    .settings-card {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+    
+    .settings-card:last-child {
+      margin-bottom: 0;
+    }
+    
+    .settings-icon {
+      font-size: 24px;
+      margin-right: 15px;
+    }
+    
+    .settings-text {
+      flex: 1;
+    }
+    
+    .settings-text h3 {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+    }
+    
+    .settings-text p {
+      margin: 0;
+      color: #777;
+      font-size: 14px;
+    }
+    
+    .settings-btn {
+      background-color: transparent;
+      border: 1px solid #333;
+      color: #333;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    
+    .settings-btn:hover {
+      background-color: #333;
+      color: white;
+    }
+    
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+    
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 0;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+    
+    .modal-header {
+      background-color: #f8f8f8;
+      padding: 15px 20px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+    
+    .close-modal {
+      font-size: 24px;
+      font-weight: bold;
+      color: #777;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    
+    .close-modal:hover {
+      color: #333;
+    }
+    
+    .modal-body {
+      padding: 20px;
+    }
+    
+    /* Forms */
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .form-row .form-group {
+      flex: 1;
+      margin-bottom: 0;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+    
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .cancel-btn, .save-btn {
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .cancel-btn {
+      background-color: transparent;
+      border: 1px solid #ddd;
+      color: #555;
+    }
+    
+    .cancel-btn:hover {
+      background-color: #f5f5f5;
+    }
+    
+    .save-btn {
+      background-color: #333;
+      border: 1px solid #333;
+      color: white;
+    }
+    
+    .save-btn:hover {
+      background-color: #555;
+    }
+    
+    /* Switch Toggle */
+    .switch-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+    }
+    
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+    
+    input:focus + .slider {
+      box-shadow: 0 0 1px #4CAF50;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    .slider.round {
+      border-radius: 24px;
+    }
+    
+    .slider.round:before {
+      border-radius: 50%;
+    }
+    
+    /* Checkbox */
+    .notification-type {
+      margin-top: 20px;
+    }
+    
+    .notification-type h3 {
+      font-size: 16px;
+      margin: 0 0 15px 0;
+    }
+    
+    .checkbox-group {
+      margin-bottom: 10px;
+    }
+    
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    .checkbox-label input {
+      margin-right: 10px;
+    }
+    
+    /* Media Queries */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .avatar-circle {
+        margin: 0 0 20px 0;
+      }
+      
+      .profile-content {
+        grid-template-columns: 1fr;
+      }
+    }
+  
+  // JavaScript for modals
+  script.
+    // Function to toggle modal visibility
+    function toggleModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal.style.display === 'block') {
+        modal.style.display = 'none';
+      } else {
+        modal.style.display = 'block';
+      }
+    }
+    
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+      const modals = document.getElementsByClassName('modal');
+      for (let i = 0; i < modals.length; i++) {
+        if (event.target === modals[i]) {
+          modals[i].style.display = 'none';
+        }
+      }
+    }

@@ -1,0 +1,366 @@
+extends layout
+
+block content
+  // Hero section with the ctrl+fit.png banner
+  .hero-banner
+    .banner-overlay
+    img.banner-image(src='/images/ctrl+fit.png', alt='Ctrl+Fit Apparel Collection' onerror="this.src='/images/placeholder.png'; this.onerror='';")
+    .hero-content
+      h1.hero-title Ctrl+Fit
+      p.hero-subtitle Elevate Your Workout Experience
+      a.shop-now-button(href='/product') Shop Now
+  
+  // New Mission Statement Section
+  .mission-section
+    .mission-content
+      h2.mission-title Health is Wealth for Developers
+      p.mission-text At Ctrl+Fit, we believe that programmers deserve workout gear that supports your coding marathons. Our mission is to remind developers to step away from the keyboard, prioritize physical health, and maintain balance. Because the best software is built by developers who take care of their body as well as their mind.
+      a.mission-button(href='/product') Shop Our Gear
+  
+  .featured-section
+    .section-header
+      h2 Featured Products
+      a.view-all-link(href='/product') See All Products →
+    
+    // Modified Featured Grid - now a single row with horizontal scroll
+    .featured-row
+      each product in featured
+        .product-item
+          .product-image-container
+            img.product-image(src=`/images/Product${product.id}.png`, alt=product.name onerror="this.src='/images/placeholder.png'; this.onerror='';")
+          
+          .product-details
+            h3.product-name= product.name
+            p.product-description= product.description.length > 80 ? product.description.substring(0, 80) + '...' : product.description
+            
+            .product-footer
+              p.product-price $#{(parseFloat(product.price) || 0).toFixed(2)}
+              a.view-button(href=`/product/${product.id}`) View
+    
+  .info-section
+    .info-card
+      h3 Free Shipping
+      p On orders over $50
+    
+    .info-card
+      h3 Returns
+      p 30-day money back guarantee
+    
+    .info-card
+      h3 Secure Checkout
+      p Safe & protected shopping
+  
+  style.
+    /* Hero banner section - New styling for your banner */
+    .hero-banner {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 40px;
+      background-color: #f5f5f5;
+    }
+    
+    .banner-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0), rgba(0,0,0,0.1));
+      z-index: 1;
+    }
+    
+    .banner-image {
+      width: 100%;
+      max-width: 1200px;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      background-color: #f5f5f5;
+    }
+    
+    .hero-content {
+      position: absolute;
+      left: 50%;
+      bottom: 50px;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 2;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 30px 40px;
+      border-radius: 4px;
+      min-width: 300px;
+    }
+    
+    .hero-title {
+      font-size: 48px;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+      color: #222;
+    }
+    
+    .hero-subtitle {
+      font-size: 20px;
+      margin-bottom: 30px;
+      opacity: 0.8;
+      color: #444;
+    }
+    
+    .shop-now-button {
+      display: inline-block;
+      background-color: #222;
+      color: white;
+      text-decoration: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 2px;
+      transition: all 0.3s;
+      border: 2px solid #222;
+    }
+    
+    .shop-now-button:hover {
+      background-color: transparent;
+      color: #222;
+    }
+    
+    /* New Mission Statement Section */
+    .mission-section {
+      background-color: #f8f8f8;
+      padding: 60px 20px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .mission-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .mission-title {
+      font-size: 28px;
+      color: #222;
+      margin-bottom: 20px;
+    }
+    .mission-text {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #444;
+      margin-bottom: 25px;
+    }
+    .mission-button {
+      display: inline-block;
+      background-color: #222;
+      color: white;
+      text-decoration: none;
+      padding: 10px 24px;
+      font-size: 16px;
+      border-radius: 2px;
+      transition: all 0.3s;
+      border: 1px solid #222;
+    }
+    .mission-button:hover {
+      background-color: white;
+      color: #222;
+    }
+    
+    /* Featured section */
+    .featured-section {
+      max-width: 1200px;
+      margin: 0 auto 60px;
+      padding: 0 20px;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    .section-header h2 {
+      font-size: 24px;
+      margin: 0;
+      color: #222;
+    }
+    .view-all-link {
+      color: #555;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .view-all-link:hover {
+      color: #222;
+    }
+    
+    /* Modified Featured Row - Single row with horizontal scroll */
+    .featured-row {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding-bottom: 20px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Hide scrollbar for cleaner look while keeping functionality */
+    .featured-row::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .featured-row {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+    
+    .product-item {
+      min-width: 280px;
+      flex: 0 0 auto;
+      border: 1px solid #eee;
+      border-radius: 2px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      background: white;
+      width: 280px; /* Fixed width for consistency */
+    }
+    .product-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .product-image-container {
+      height: 220px;
+      overflow: hidden;
+    }
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+    .product-item:hover .product-image {
+      transform: scale(1.05);
+    }
+    .product-details {
+      padding: 15px;
+    }
+    .product-name {
+      font-size: 18px;
+      margin: 0 0 10px 0;
+      color: #222;
+    }
+    .product-description {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 15px;
+      line-height: 1.5;
+      height: 42px;
+      overflow: hidden;
+    }
+    .product-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+    }
+    .product-price {
+      font-weight: bold;
+      font-size: 18px;
+      margin: 0;
+      color: #222;
+    }
+    .view-button {
+      display: inline-block;
+      background-color: #222;
+      color: white;
+      text-decoration: none;
+      padding: 6px 15px;
+      border-radius: 2px;
+      font-size: 14px;
+      transition: all 0.3s;
+      border: 1px solid #222;
+    }
+    .view-button:hover {
+      background-color: white;
+      color: #222;
+    }
+    
+    /* Info section */
+    .info-section {
+      background-color: #f5f5f5;
+      padding: 50px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      text-align: center;
+      margin-bottom: -50px; /* Offset footer margin */
+    }
+    .info-card {
+      padding: 20px;
+    }
+    .info-card h3 {
+      margin-top: 0;
+      font-size: 20px;
+      color: #222;
+      margin-bottom: 10px;
+    }
+    .info-card p {
+      color: #555;
+      margin: 0;
+    }
+    
+    /* Media queries */
+    @media (max-width: 768px) {
+      .hero-banner {
+        height: 400px;
+      }
+      
+      .hero-content {
+        width: 90%;
+        bottom: 20px;
+        padding: 20px;
+      }
+      
+      .hero-title {
+        font-size: 36px;
+      }
+      
+      .hero-subtitle {
+        font-size: 18px;
+        margin-bottom: 20px;
+      }
+      
+      .mission-title {
+        font-size: 24px;
+      }
+      
+      .product-item {
+        min-width: 240px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .hero-banner {
+        height: 350px;
+      }
+      
+      .hero-content {
+        bottom: 10px;
+        padding: 15px;
+      }
+      
+      .hero-title {
+        font-size: 30px;
+        margin-bottom: 10px;
+      }
+      
+      .hero-subtitle {
+        font-size: 16px;
+        margin-bottom: 15px;
+      }
+      
+      .shop-now-button {
+        padding: 10px 20px;
+        font-size: 14px;
+      }

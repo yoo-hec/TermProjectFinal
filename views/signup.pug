@@ -1,0 +1,132 @@
+extends layout
+
+block content
+  .auth-container
+    .auth-card
+      h1.auth-title Create Account
+      
+      if error
+        .error-message
+          p= error
+      
+      form.auth-form(action='/signup' method='POST')
+        .form-group
+          label(for='username') Username
+          input#username(type='text' name='username' required)
+        
+        .form-group
+          label(for='password') Password
+          input#password(type='password' name='password' required)
+        
+        .form-group
+          label(for='confirmPassword') Confirm Password
+          input#confirmPassword(type='password' name='confirmPassword' required)
+        
+        .form-actions
+          button.signup-btn(type='submit') Create Account
+          a.login-link(href='/login') Already have an account?
+  
+  style.
+    /* Auth Pages Styles */
+    .auth-container {
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    
+    .auth-card {
+      background: white;
+      border-radius: 2px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      overflow: hidden;
+      padding: 30px;
+      border: 1px solid #eee;
+    }
+    
+    .auth-title {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: #222;
+    }
+    
+    .auth-form {
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #444;
+    }
+    
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 2px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus {
+      border-color: #222;
+      outline: none;
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 30px;
+    }
+    
+    .signup-btn {
+      background-color: #222;
+      color: white;
+      border: 1px solid #222;
+      padding: 12px 25px;
+      border-radius: 2px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .signup-btn:hover {
+      background-color: white;
+      color: #222;
+    }
+    
+    .login-link {
+      color: #555;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+    
+    .login-link:hover {
+      color: #222;
+      text-decoration: underline;
+    }
+    
+    .error-message {
+      background-color: #fafafa;
+      color: #d32f2f;
+      border-left: 3px solid #d32f2f;
+      padding: 15px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    
+    .error-message p {
+      margin: 0;
+    }

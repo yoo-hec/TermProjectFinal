@@ -1,0 +1,172 @@
+extends layout
+
+block content
+  .products-container
+    .products-header
+      h1.text-center All Products
+      p.subtitle Find the perfect gear for your workout routine
+    
+    .products-grid
+      each product in products
+        .product-card
+          .product-image-container
+            img.product-image(src=`/images/Product${product.id}.png`, alt=product.name)
+          
+          .product-card-content
+            h2.product-name= product.name
+            p.product-description= product.description.length > 100 ? product.description.substring(0, 100) + '...' : product.description
+            
+            .product-card-footer
+              p.product-price $#{(parseFloat(product.price) || 0).toFixed(2)}
+              .product-actions
+                a.product-button.view-button(href=`/product/${product.id}`) View
+                form.add-cart-form(action=`/product/add-to-cart/${product.id}` method='POST')
+                  input(type='hidden' name='returnUrl' value='/product')
+                  button.product-button.add-button(type='submit') Add to Cart
+  
+  style.
+    /* Products Page Styles */
+    .products-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .products-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .products-header h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      color: #222;
+    }
+    
+    .subtitle {
+      color: #555;
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    
+    .product-card {
+      border: 1px solid #eee;
+      border-radius: 2px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      background: white;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .product-image-container {
+      height: 220px;
+      overflow: hidden;
+    }
+    
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+    
+    .product-card:hover .product-image {
+      transform: scale(1.05);
+    }
+    
+    .product-card-content {
+      padding: 20px;
+    }
+    
+    .product-name {
+      font-size: 18px;
+      margin: 0 0 10px 0;
+      color: #222;
+    }
+    
+    .product-description {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.5;
+      height: 63px;
+      overflow: hidden;
+    }
+    
+    .product-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+    }
+    
+    .product-price {
+      font-weight: bold;
+      font-size: 18px;
+      margin: 0;
+      color: #222;
+    }
+    
+    .product-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .product-button {
+      padding: 8px 15px;
+      border-radius: 2px;
+      font-size: 14px;
+      transition: all 0.3s;
+      text-align: center;
+      display: inline-block;
+    }
+    
+    .view-button {
+      background-color: #222;
+      color: white;
+      text-decoration: none;
+      border: 1px solid #222;
+    }
+    
+    .view-button:hover {
+      background-color: #333;
+    }
+    
+    .add-button {
+      background-color: white;
+      color: #222;
+      border: 1px solid #222;
+      cursor: pointer;
+    }
+    
+    .add-button:hover {
+      background-color: #222;
+      color: white;
+    }
+    
+    .add-cart-form {
+      margin: 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+      
+      .product-actions {
+        flex-direction: column;
+      }
+    }
